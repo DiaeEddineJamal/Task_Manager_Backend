@@ -5,29 +5,32 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project {
+public class Tasks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
     private String name;
-
-    private int budget;
-
     private String description;
-
     private LocalDateTime estimatedEndtime;
-
     private LocalDateTime endtime;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private List<Tasks> tasks = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private OurUsers user;
 }
