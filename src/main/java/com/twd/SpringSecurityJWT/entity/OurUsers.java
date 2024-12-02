@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -17,9 +18,13 @@ public class OurUsers implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String name;
     private String email;
     private String password;
     private String role;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateInscription;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));
@@ -51,5 +56,9 @@ public class OurUsers implements UserDetails {
         return true;
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.dateInscription = new Date();
+    }
 
 }

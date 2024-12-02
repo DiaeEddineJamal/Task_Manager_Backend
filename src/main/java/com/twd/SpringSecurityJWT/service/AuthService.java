@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -26,10 +27,29 @@ public class AuthService {
     public ReqRes signUp(ReqRes registrationRequest){
         ReqRes resp = new ReqRes();
         try {
+            // Validate email format using regex
+            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+            if (!registrationRequest.getEmail().matches(emailRegex)) {
+                throw new IllegalArgumentException("Invalid email format");
+            }
+
+            // Check if email is unique
+            Optional<OurUsers> existingUser = ourUserRepo.findByEmail(registrationRequest.getEmail());
+            if (existingUser.isPresent()) {
+                throw new IllegalArgumentException("Email already exists");
+            }
+
+            // Validate password format using regex
+            String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+            if (!registrationRequest.getPassword().matches(passwordRegex)) {
+                throw new IllegalArgumentException("Password must be at least 8 characters long and contain at least one digit, one lowercase letter, one uppercase letter, one special character, and no whitespace");
+            }
+
             OurUsers ourUsers = new OurUsers();
             ourUsers.setEmail(registrationRequest.getEmail());
             ourUsers.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             ourUsers.setRole(registrationRequest.getRole());
+            ourUsers.setName(registrationRequest.getName());
 
             // Check if the role is null or empty, and default to "USER"
             String role = registrationRequest.getRole();
