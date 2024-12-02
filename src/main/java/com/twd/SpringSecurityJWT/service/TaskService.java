@@ -1,12 +1,11 @@
 package com.twd.SpringSecurityJWT.service;
 
-import com.twd.SpringSecurityJWT.entity.Priority;
-import com.twd.SpringSecurityJWT.entity.Status;
-import com.twd.SpringSecurityJWT.entity.Tasks;
-import com.twd.SpringSecurityJWT.entity.Project;
+import com.twd.SpringSecurityJWT.entity.*;
+import com.twd.SpringSecurityJWT.repository.OurUserRepo;
 import com.twd.SpringSecurityJWT.repository.TaskRepository;
 import com.twd.SpringSecurityJWT.repository.ProjectRepository;
 import com.twd.SpringSecurityJWT.dto.TaskDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
@@ -16,16 +15,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskService {
 
+
+    @Autowired
     private final TaskRepository taskRepository;
+
+    @Autowired
     private final ProjectRepository projectRepository;
+
+    @Autowired
+    private final OurUserRepo ourUserRepo;
 
     // Create a new task
     public Tasks createTask(TaskDTO taskDTO) {
         Project project = projectRepository.findById(taskDTO.getProjectId())
                 .orElseThrow(() -> new RuntimeException("Project not found with ID: " + taskDTO.getProjectId()));
-
+        OurUsers user = ourUserRepo.findById(taskDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + taskDTO.getUserId()));
         Status status = parseStatus(taskDTO.getStatus());
         Priority priority = parsePriority(taskDTO.getPriority());
+
 
         Tasks task = new Tasks();
         task.setName(taskDTO.getName());
@@ -35,6 +43,9 @@ public class TaskService {
         task.setStatus(status);
         task.setPriority(priority);
         task.setProject(project);
+        task.setUser(user);
+
+        
 
         return taskRepository.save(task);
     }

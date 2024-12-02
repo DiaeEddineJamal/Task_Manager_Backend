@@ -2,6 +2,7 @@ package com.twd.SpringSecurityJWT.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.twd.SpringSecurityJWT.entity.OurUsers;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -18,4 +19,5 @@ public class TaskDTO {
     private String priority;
     private int projectId;
     private int userId;
+
 }

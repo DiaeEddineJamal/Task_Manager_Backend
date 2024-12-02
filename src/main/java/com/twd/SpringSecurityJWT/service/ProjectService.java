@@ -19,7 +19,7 @@ public class ProjectService {
         return projectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found with ID: " + id));
     }
-    
+
     // Get all projects
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
