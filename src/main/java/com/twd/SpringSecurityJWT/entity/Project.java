@@ -1,5 +1,6 @@
 package com.twd.SpringSecurityJWT.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,8 @@ public class Project {
 
     private LocalDateTime endtime;
 
+    // Use JsonManagedReference to control serialization of tasks
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Tasks> tasks = new ArrayList<>();
 }

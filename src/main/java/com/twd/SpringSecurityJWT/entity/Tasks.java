@@ -1,5 +1,7 @@
 package com.twd.SpringSecurityJWT.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,11 +28,16 @@ public class Tasks {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
+    // Use JsonBackReference to prevent recursive serialization
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
+    @JsonBackReference  // This prevents project from serializing tasks
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference  // This prevents user from serializing tasks
     private OurUsers user;
-}
+
+
+    }
