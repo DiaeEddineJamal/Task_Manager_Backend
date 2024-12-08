@@ -36,30 +36,42 @@ public class PasswordRecoveryService {
     public ReqRes initiatePasswordReset(String email) {
         ReqRes response = new ReqRes();
 
-        OurUsers user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            OurUsers user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Delete any existing reset tokens
-        tokenRepository.findByUser(user).ifPresent(tokenRepository::delete);
+            // Delete any existing reset tokens
+            tokenRepository.findByUser(user).ifPresent(tokenRepository::delete);
 
-        // Generate new reset token
-        String token = generateUniqueToken();
+            // Generate new reset token
+            String token = generateUniqueToken();
 
-        PasswordResetToken resetToken = new PasswordResetToken();
-        resetToken.setToken(token);
-        resetToken.setUser(user);
-        resetToken.setExpiryDate(LocalDateTime.now().plusHours(1));
+            PasswordResetToken resetToken = new PasswordResetToken();
+            resetToken.setToken(token);
+            resetToken.setUser(user);
+            resetToken.setExpiryDate(LocalDateTime.now().plusHours(1));
 
-        tokenRepository.save(resetToken);
+            tokenRepository.save(resetToken);
 
-        // Send reset email
-        sendPasswordResetEmail(user, token);
+            // Send reset email
+            sendPasswordResetEmail(user, token);
 
-        response.setStatusCode(200);
-        response.setMessage("Password reset link sent");
-        response.setResetToken(token);
+            response.setStatusCode(200);
+            response.setMessage("Password reset link sent");
+            response.setResetToken(token);
+        } catch (RuntimeException ex) {
+            if (ex.getMessage().equals("User not found")) {
+                response.setStatusCode(500);
+                response.setMessage("User doesn't exist with the provided email.");
+            } else {
+                response.setStatusCode(500);
+                response.setMessage("An unexpected error occurred.");
+            }
+        }
+
         return response;
     }
+
 
     @Transactional
     public ReqRes resetPassword(ReqRes request) {
@@ -82,6 +94,10 @@ public class PasswordRecoveryService {
 
         // Update user password
         OurUsers user = resetToken.getUser();
+        if(user==null){
+            throw new RuntimeException("User not found");
+
+        }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
 
