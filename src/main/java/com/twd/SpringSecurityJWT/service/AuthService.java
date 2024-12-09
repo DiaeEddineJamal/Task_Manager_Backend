@@ -82,6 +82,7 @@ public class AuthService {
             var jwt = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
             response.setStatusCode(200);
+            response.setName(user.getName());
             response.setToken(jwt);
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hr");
