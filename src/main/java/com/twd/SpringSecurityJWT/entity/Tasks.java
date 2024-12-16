@@ -28,16 +28,14 @@ public class Tasks {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    // Use JsonBackReference to prevent recursive serialization
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
-    @JsonBackReference  // This prevents project from serializing tasks
+    @JsonBackReference  // Prevent recursion during serialization (for project)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  // Prevent Hibernate proxy serialization issues
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonBackReference  // This prevents user from serializing tasks
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "tasks"})  // Prevent recursion and serialization issues
     private OurUsers user;
-
-
-    }
+}

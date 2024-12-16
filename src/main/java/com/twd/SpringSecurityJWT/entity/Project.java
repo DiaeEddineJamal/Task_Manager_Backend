@@ -1,6 +1,7 @@
 package com.twd.SpringSecurityJWT.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,16 @@ public class Project {
 
     private LocalDateTime endtime;
 
-    // Use JsonManagedReference to control serialization of tasks
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @ManyToMany
+    @JoinTable(
+            name = "project_team",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<OurUsers> team = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference  // Prevent recursion during serialization (for tasks)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  // Prevent Hibernate proxy serialization issues
     private List<Tasks> tasks = new ArrayList<>();
 }
