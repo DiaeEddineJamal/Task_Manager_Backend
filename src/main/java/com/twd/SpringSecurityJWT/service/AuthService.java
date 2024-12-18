@@ -72,27 +72,46 @@ public class AuthService {
         return resp;
     }
 
-    public ReqRes signIn(ReqRes signinRequest){
+    public ReqRes signIn(ReqRes signinRequest) {
         ReqRes response = new ReqRes();
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getEmail(),signinRequest.getPassword()));
-            var user = ourUserRepo.findByEmail(signinRequest.getEmail()).orElseThrow();
-            System.out.println("USER IS: "+ user);
-            var jwt = jwtUtils.generateToken(user);
-            var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
+            // Authenticate the user
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword())
+            );
+
+            // Retrieve the user from the repository
+            OurUsers user = ourUserRepo.findByEmail(signinRequest.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Get the user ID from the repository
+            Integer userId = user.getId(); // Ensure `OurUsers` has the `getId()` method implemented
+
+            // Generate tokens
+            String jwt = jwtUtils.generateToken(user);
+            String refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
+
+            // Set response fields
             response.setStatusCode(200);
             response.setName(user.getName());
+            response.setEmail(user.getEmail());
+            response.setRole(user.getRole());
+            response.setMessage("Successfully Signed In");
             response.setToken(jwt);
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hr");
-            response.setMessage("Successfully Signed In");
-        }catch (Exception e){
+
+            // Use the user ID
+            response.setOurUsers(user); // Assign the entire user object if necessary
+        } catch (Exception e) {
             response.setStatusCode(500);
             response.setError(e.getMessage());
         }
+
         return response;
     }
+
 
     public ReqRes refreshToken(ReqRes refreshTokenReqiest){
         ReqRes response = new ReqRes();

@@ -27,14 +27,23 @@ public class TaskService {
 
     // Create a new task
     public Tasks createTask(TaskDTO taskDTO) {
+        // Find the project by ID
         Project project = projectRepository.findById(taskDTO.getProjectId())
                 .orElseThrow(() -> new RuntimeException("Project not found with ID: " + taskDTO.getProjectId()));
+
+        // Find the user by ID
         OurUsers user = ourUserRepo.findById(taskDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + taskDTO.getUserId()));
-        Status status = parseStatus(taskDTO.getStatus());
+
+        // Set the default status if not provided
+        Status status = (taskDTO.getStatus() == null || taskDTO.getStatus().isEmpty())
+                ? Status.PENDING // Default value
+                : parseStatus(taskDTO.getStatus());
+
+        // Parse the priority
         Priority priority = parsePriority(taskDTO.getPriority());
 
-
+        // Create a new task and set its properties
         Tasks task = new Tasks();
         task.setName(taskDTO.getName());
         task.setDescription(taskDTO.getDescription());
@@ -45,10 +54,10 @@ public class TaskService {
         task.setProject(project);
         task.setUser(user);
 
-        
-
+        // Save and return the task
         return taskRepository.save(task);
     }
+
 
     // Update an existing task
     public Tasks updateTask(int id, TaskDTO taskDTO) {

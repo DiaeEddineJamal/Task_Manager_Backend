@@ -47,6 +47,8 @@ public class ReqRes {
                 newPassword.equals(confirmNewPassword);
     }
 
+
+
     // Additional password strength validation (optional)
 
 
