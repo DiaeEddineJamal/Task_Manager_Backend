@@ -19,7 +19,7 @@ public class CommentController {
 
     // Créer un commentaire
     @PostMapping("/addproject")
-    @PreAuthorize("hasRole('USER')") // Ensure the user has the 'USER' role
+     // Ensure the user has the 'USER' role
     public Comment createComment(@RequestParam String content,
                                  @RequestBody Tasks task,
                                  @RequestBody OurUsers user) {

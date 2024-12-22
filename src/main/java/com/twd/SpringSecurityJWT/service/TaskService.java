@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
-
 
     @Autowired
     private final TaskRepository taskRepository;
@@ -48,16 +49,22 @@ public class TaskService {
         task.setName(taskDTO.getName());
         task.setDescription(taskDTO.getDescription());
         task.setEstimatedEndtime(taskDTO.getEstimatedEndtime());
-        task.setEndtime(taskDTO.getEndtime());
         task.setStatus(status);
         task.setPriority(priority);
         task.setProject(project);
         task.setUser(user);
 
-        // Save and return the task
-        return taskRepository.save(task);
-    }
+        // If the task is completed, set the endtime to the current local time
+        if (status == Status.COMPLETED) {
+            task.setEndtime(LocalDateTime.now());
+        }
 
+        // Save the task and update project status if needed
+        task = taskRepository.save(task);
+        updateProjectStatus(project);
+
+        return task;
+    }
 
     // Update an existing task
     public Tasks updateTask(int id, TaskDTO taskDTO) {
@@ -70,11 +77,41 @@ public class TaskService {
         task.setName(taskDTO.getName());
         task.setDescription(taskDTO.getDescription());
         task.setEstimatedEndtime(taskDTO.getEstimatedEndtime());
-        task.setEndtime(taskDTO.getEndtime());
         task.setStatus(status);
         task.setPriority(priority);
 
-        return taskRepository.save(task);
+        // If the task is completed, set the endtime to the current local time
+        if (status == Status.COMPLETED && task.getEndtime() == null) {
+            task.setEndtime(LocalDateTime.now());
+        }
+
+        // Save the updated task and update project status if needed
+        task = taskRepository.save(task);
+        updateProjectStatus(task.getProject());
+
+        return task;
+    }
+
+    // Method to update project status based on tasks' statuses
+    private void updateProjectStatus(Project project) {
+        List<Tasks> tasks = project.getTasks(); // Directly using the tasks list from the project entity
+
+        // Check if all tasks are completed
+        boolean allCompleted = tasks.stream().allMatch(task -> task.getStatus() == Status.COMPLETED);
+
+        // Check if any task is completed
+        boolean anyInProgress = tasks.stream().anyMatch(task -> task.getStatus() == Status.IN_PROGRESS);
+
+        // Determine the project status
+        if (allCompleted) {
+            project.setStatus(Status.COMPLETED);
+        } else if (anyInProgress) {
+            project.setStatus(Status.IN_PROGRESS);
+        } else {
+            project.setStatus(Status.PENDING);
+        }
+
+        projectRepository.save(project);  // Save the updated project status
     }
 
     // Get all tasks
@@ -115,15 +152,22 @@ public class TaskService {
         return taskDTO;
     }
 
-
-
-
     // Delete a task by ID
     public void deleteTask(int id) {
         if (!taskRepository.existsById(id)) {
             throw new RuntimeException("Task not found with ID: " + id);
         }
         taskRepository.deleteById(id);
+    }
+
+    // Retrieve overdue tasks within 3 days
+    public List<Tasks> getOverdueTasks() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime thresholdDateTime = currentDateTime.plusDays(3);
+
+        return taskRepository.findAll().stream()
+                .filter(task -> task.getEstimatedEndtime() != null && task.getEstimatedEndtime().isBefore(thresholdDateTime))
+                .collect(Collectors.toList());
     }
 
     // Helper method to parse the status string to Status enum

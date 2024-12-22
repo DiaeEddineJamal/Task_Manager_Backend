@@ -30,6 +30,10 @@ public class Project {
 
     private LocalDateTime endtime;
 
+    // Add the status field to the project
+    @Enumerated(EnumType.STRING)
+    private Status status; // This will track the status of the project
+
     @ManyToMany
     @JoinTable(
             name = "project_team",
