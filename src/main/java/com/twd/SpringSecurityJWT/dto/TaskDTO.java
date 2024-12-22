@@ -18,6 +18,10 @@ public class TaskDTO {
     private String status;
     private String priority;
     private int projectId;
+    private String projectName; // Added to include the project's name
     private int userId;
+    private String userName;    // Added to include the user's name
+    private String userEmail;   // Added to include the user's email
+    private String userRole;    // Added to include the user's role
 
 }

@@ -17,9 +17,9 @@ public class TasksController {
 
     // Get a task by ID (Accessible only by users with role USER)
     @GetMapping("/{id}")
-    public ResponseEntity<Tasks> getTaskById(@PathVariable int id) {
-        Tasks task = taskService.getTaskById(id);
-        return ResponseEntity.ok(task);
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable int id) {
+        TaskDTO taskDTO = taskService.getTaskById(id);
+        return ResponseEntity.ok(taskDTO);
     }
 
     // Get all tasks (Accessible only by users with role USER)

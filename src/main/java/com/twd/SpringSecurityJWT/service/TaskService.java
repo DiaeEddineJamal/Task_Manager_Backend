@@ -83,10 +83,40 @@ public class TaskService {
     }
 
     // Get a task by ID
-    public Tasks getTaskById(int id) {
-        return taskRepository.findById(id)
+    public TaskDTO getTaskById(int id) {
+        // Fetch the task by ID
+        Tasks task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found with ID: " + id));
+
+        // Map task entity to TaskDTO
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setId(task.getId());
+        taskDTO.setName(task.getName());
+        taskDTO.setDescription(task.getDescription());
+        taskDTO.setEstimatedEndtime(task.getEstimatedEndtime());
+        taskDTO.setEndtime(task.getEndtime());
+        taskDTO.setStatus(task.getStatus() != null ? task.getStatus().toString() : null);
+        taskDTO.setPriority(task.getPriority() != null ? task.getPriority().toString() : null);
+
+        // Include project details
+        if (task.getProject() != null) {
+            taskDTO.setProjectId(task.getProject().getId());
+            taskDTO.setProjectName(task.getProject().getName());
+        }
+
+        // Include user details
+        if (task.getUser() != null) {
+            taskDTO.setUserId(task.getUser().getId());
+            taskDTO.setUserName(task.getUser().getName());
+            taskDTO.setUserEmail(task.getUser().getEmail());
+            taskDTO.setUserRole(task.getUser().getRole());
+        }
+
+        return taskDTO;
     }
+
+
+
 
     // Delete a task by ID
     public void deleteTask(int id) {

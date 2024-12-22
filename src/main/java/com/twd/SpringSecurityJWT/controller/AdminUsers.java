@@ -1,8 +1,10 @@
 package com.twd.SpringSecurityJWT.controller;
 
 import com.twd.SpringSecurityJWT.dto.ReqRes;
+import com.twd.SpringSecurityJWT.entity.OurUsers;
 import com.twd.SpringSecurityJWT.entity.Product;
 import com.twd.SpringSecurityJWT.repository.ProductRepo;
+import com.twd.SpringSecurityJWT.service.OurUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,11 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class AdminUsers {
 
     @Autowired
     private ProductRepo productRepo;
+
+    @Autowired
+    private OurUserDetailsService ourUserDetailsService;
 
     @GetMapping("/public/product")
     public ResponseEntity<Object> getAllProducts(){
@@ -49,5 +56,12 @@ public class AdminUsers {
         System.out.println(authentication.getDetails()); // get remote ip
         System.out.println(authentication.getName()); //returns the email because the email is the unique identifier
         return authentication.getName(); // returns the email
+    }
+
+    // New Method: Get All Users
+    @GetMapping("/adminuser/all-users")
+    public ResponseEntity<List<OurUsers>> getAllUsers() {
+        List<OurUsers> users = ourUserDetailsService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 }
