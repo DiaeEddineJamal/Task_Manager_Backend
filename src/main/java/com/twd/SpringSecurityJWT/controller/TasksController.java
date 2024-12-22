@@ -7,46 +7,98 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/user/tasks") // General path for tasks
+@RequestMapping("/user/tasks")
 public class TasksController {
 
     @Autowired
     private TaskService taskService;
 
-    // Get a task by ID (Accessible only by users with role USER)
     @GetMapping("/{id}")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable int id) {
         TaskDTO taskDTO = taskService.getTaskById(id);
         return ResponseEntity.ok(taskDTO);
     }
 
-    // Get all tasks (Accessible only by users with role USER)
     @GetMapping("/getall")
     public ResponseEntity<List<Tasks>> getAllTasks() {
         List<Tasks> tasks = taskService.getAllTasks();
         return ResponseEntity.ok(tasks);
     }
 
-    // Add a new task (Accessible only by users with role USER)
     @PostMapping("/addtask")
-    public ResponseEntity<Tasks> addTask(@RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<Map<String, Object>> addTask(@RequestBody TaskDTO taskDTO) {
         Tasks savedTask = taskService.createTask(taskDTO);
-        return ResponseEntity.ok(savedTask);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Task created successfully");
+        response.put("task", savedTask);
+
+        if (savedTask.getStatus() != null && savedTask.getStatus().toString().equals("COMPLETED")) {
+            response.put("endtime", savedTask.getEndtime());
+        }
+
+        return ResponseEntity.ok(response);
     }
 
-    // Update a task by ID (Accessible only by users with role USER)
     @PutMapping("/update/{id}")
-    public ResponseEntity<Tasks> updateTaskById(@PathVariable int id, @RequestBody TaskDTO updatedTask) {
+    public ResponseEntity<Map<String, Object>> updateTaskById(@PathVariable int id, @RequestBody TaskDTO updatedTask) {
         Tasks task = taskService.updateTask(id, updatedTask);
-        return ResponseEntity.ok(task);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Task updated successfully");
+        response.put("task", task);
+
+        // Add completion information if task is completed
+        if (task.getStatus() != null && task.getStatus().toString().equals("COMPLETED")) {
+            response.put("completionTime", task.getEndtime());
+            response.put("message", "Task marked as completed");
+        }
+
+        return ResponseEntity.ok(response);
     }
 
-    // Delete a task by ID (Accessible only by users with role USER)
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteTaskById(@PathVariable int id) {
+    public ResponseEntity<Map<String, String>> deleteTaskById(@PathVariable int id) {
         taskService.deleteTask(id);
-        return ResponseEntity.ok("Task with ID " + id + " has been deleted successfully.");
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Task with ID " + id + " has been deleted successfully");
+        response.put("status", "SUCCESS");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/overdue")
+    public ResponseEntity<Map<String, Object>> getOverdueTasks() {
+        List<Tasks> overdueTasks = taskService.getOverdueTasks();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", overdueTasks.isEmpty() ?
+                "No overdue tasks found" :
+                "Found " + overdueTasks.size() + " overdue tasks");
+        response.put("tasks", overdueTasks);
+        response.put("count", overdueTasks.size());
+
+        return ResponseEntity.ok(response);
+    }
+
+    // Optional: Add a specific endpoint for completing tasks
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<Map<String, Object>> completeTask(@PathVariable int id) {
+        TaskDTO completionDTO = new TaskDTO();
+        completionDTO.setStatus("COMPLETED");
+
+        Tasks completedTask = taskService.updateTask(id, completionDTO);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Task marked as completed");
+        response.put("task", completedTask);
+        response.put("completionTime", completedTask.getEndtime());
+
+        return ResponseEntity.ok(response);
     }
 }
