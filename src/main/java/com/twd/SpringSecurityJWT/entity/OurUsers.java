@@ -22,21 +22,31 @@ public class OurUsers implements UserDetails {
     private String email;
     private String password;
     private String role;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateInscription;
+
+    // Profile picture fields with LONGBLOB handling
+    @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
+    private byte[] profilePicture;
+
+    @Column(name = "profile_picture_type")
+    private String profilePictureType;
+
+    @Column(name = "profile_picture_name")
+    private String profilePictureName;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));
     }
 
-
     @Override
     public String getUsername() {
         return email;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -65,4 +75,22 @@ public class OurUsers implements UserDetails {
         this.dateInscription = new Date();
     }
 
+    // Profile picture methods
+    public void setProfilePicture(byte[] profilePicture, String contentType, String fileName) {
+        this.profilePicture = profilePicture;
+        this.profilePictureType = contentType;
+        this.profilePictureName = fileName;
+    }
+
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
+
+    public String getProfilePictureType() {
+        return profilePictureType;
+    }
+
+    public String getProfilePictureName() {
+        return profilePictureName;
+    }
 }
