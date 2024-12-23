@@ -46,20 +46,30 @@ public class TasksController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Map<String, Object>> updateTaskById(@PathVariable int id, @RequestBody TaskDTO updatedTask) {
-        Tasks task = taskService.updateTask(id, updatedTask);
-
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Task updated successfully");
-        response.put("task", task);
 
-        // Add completion information if task is completed
-        if (task.getStatus() != null && task.getStatus().toString().equals("COMPLETED")) {
-            response.put("completionTime", task.getEndtime());
-            response.put("message", "Task marked as completed");
+        try {
+            // Update the task
+            Tasks task = taskService.updateTask(id, updatedTask);
+
+            response.put("message", "Task updated successfully");
+            response.put("task", task);
+
+            // Add completion information if the task is completed
+            if (task.getStatus() != null && task.getStatus().toString().equals("COMPLETED")) {
+                response.put("completionTime", task.getEndtime());
+                response.put("message", "Task marked as completed");
+            }
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            // Handle exceptions and return an error response
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(403).body(response); // HTTP 403 Forbidden
         }
-
-        return ResponseEntity.ok(response);
     }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Map<String, String>> deleteTaskById(@PathVariable int id) {

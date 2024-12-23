@@ -6,6 +6,8 @@ import com.twd.SpringSecurityJWT.repository.TaskRepository;
 import com.twd.SpringSecurityJWT.repository.ProjectRepository;
 import com.twd.SpringSecurityJWT.dto.TaskDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
@@ -68,12 +70,24 @@ public class TaskService {
 
     // Update an existing task
     public Tasks updateTask(int id, TaskDTO taskDTO) {
+        // Fetch the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        // Find the task by ID
         Tasks task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found with ID: " + id));
 
+        // Check if the current user is the creator of the task
+        if (task.getUser() == null || !task.getUser().getEmail().equals(currentUserEmail)) {
+            throw new RuntimeException("You are not allowed to update this task");
+        }
+
+        // Parse the status and priority
         Status status = parseStatus(taskDTO.getStatus());
         Priority priority = parsePriority(taskDTO.getPriority());
 
+        // Update task fields
         task.setName(taskDTO.getName());
         task.setDescription(taskDTO.getDescription());
         task.setEstimatedEndtime(taskDTO.getEstimatedEndtime());
@@ -91,6 +105,7 @@ public class TaskService {
 
         return task;
     }
+
 
     // Method to update project status based on tasks' statuses
     private void updateProjectStatus(Project project) {
