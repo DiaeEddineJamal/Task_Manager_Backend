@@ -9,11 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig {
 
     @Bean
-    public WebMvcConfigurer webMvcConfigurer(){
+    public WebMvcConfigurer webMvcConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**"); //Enable CORS for all endpoints
+                registry.addMapping("/**") // Enable CORS for all endpoints
+                        .allowedOrigins("http://localhost:4200") // Allow requests from this origin
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Specify allowed methods
+                        .allowCredentials(true); // Allow credentials if needed
             }
         };
     }
