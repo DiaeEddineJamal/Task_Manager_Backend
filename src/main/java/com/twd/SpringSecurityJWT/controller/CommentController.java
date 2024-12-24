@@ -1,10 +1,9 @@
 package com.twd.SpringSecurityJWT.controller;
 
 import com.twd.SpringSecurityJWT.entity.Comment;
-import com.twd.SpringSecurityJWT.entity.OurUsers;
-import com.twd.SpringSecurityJWT.entity.Tasks;
 import com.twd.SpringSecurityJWT.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,33 +16,48 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    // Créer un commentaire
-    @PostMapping("/addproject")
-     // Ensure the user has the 'USER' role
-    public Comment createComment(@RequestParam String content,
-                                 @RequestBody Tasks task,
-                                 @RequestBody OurUsers user) {
-        return commentService.createComment(content, task, user);
+    @PostMapping("/addcomment")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Comment> createComment(@RequestBody CommentRequest commentRequest) {
+        Comment createdComment = commentService.createComment(
+                commentRequest.getContent(),
+                commentRequest.getTaskId(),
+                commentRequest.getUserId()
+        );
+        return ResponseEntity.ok(createdComment);
     }
 
-    // Récupérer tous les commentaires
-    @PostMapping("/getallcomments")
-    @PreAuthorize("hasRole('USER')") // Ensure the user has the 'USER' role
-    public List<Comment> getAllComments() {
-        return commentService.getAllComments();
+    @GetMapping("/getallcomments")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<Comment>> getAllComments() {
+        return ResponseEntity.ok(commentService.getAllComments());
     }
 
-    // Récupérer un commentaire par ID
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')") // Ensure the user has the 'USER' role
-    public Comment getCommentById(@PathVariable Long id) {
-        return commentService.getCommentById(id);
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Comment> getCommentById(@PathVariable Integer id) {
+        Comment comment = commentService.getCommentById(id);
+        return comment != null ? ResponseEntity.ok(comment) : ResponseEntity.notFound().build();
     }
 
-    // Supprimer un commentaire
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('USER')") // Ensure the user has the 'USER' role
-    public void deleteComment(@PathVariable Long id) {
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer id) {
         commentService.deleteComment(id);
+        return ResponseEntity.noContent().build();
     }
+}
+
+class CommentRequest {
+    private String content;
+    private Integer taskId;
+    private Integer userId;
+
+    // Getters and setters
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+    public Integer getTaskId() { return taskId; }
+    public void setTaskId(Integer taskId) { this.taskId = taskId; }
+    public Integer getUserId() { return userId; }
+    public void setUserId(Integer userId) { this.userId = userId; }
 }
