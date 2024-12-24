@@ -45,18 +45,24 @@ public class ProjectService {
 
     // Update a project by ID
     public Project updateProjectById(int id, Project updatedProject) {
+        // Retrieve the existing project
         Project existingProject = projectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found with ID: " + id));
 
+        // Update only the fields explicitly provided in the request body
         existingProject.setName(updatedProject.getName());
         existingProject.setBudget(updatedProject.getBudget());
         existingProject.setDescription(updatedProject.getDescription());
         existingProject.setEstimatedEndtime(updatedProject.getEstimatedEndtime());
         existingProject.setEndtime(updatedProject.getEndtime());
-        existingProject.setTeam(updatedProject.getTeam());
 
+        // Retain the existing team
+        // The team in the database remains unchanged if not passed in the request body
+
+        // Save and return the updated project
         return projectRepository.save(existingProject);
     }
+
 
     // Delete a project by ID
     public void deleteProjectById(int id) {
