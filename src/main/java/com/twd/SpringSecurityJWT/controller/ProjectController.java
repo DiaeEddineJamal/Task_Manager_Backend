@@ -18,7 +18,7 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @GetMapping("/user/projects/{id}")
+    @GetMapping("/useradmin/projects/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Project> getProjectById(@PathVariable int id) {
         Project project = projectService.getProjectById(id);
@@ -39,8 +39,7 @@ public class ProjectController {
         return ResponseEntity.ok(savedProject);
     }
 
-    @PutMapping("/user/projects/update/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/projects/update/{id}")
     public ResponseEntity<Project> updateProjectById(@PathVariable int id, @RequestBody Project updatedProject) {
         Project project = projectService.updateProjectById(id, updatedProject);
         return ResponseEntity.ok(project);
