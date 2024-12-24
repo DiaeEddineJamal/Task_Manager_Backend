@@ -25,7 +25,7 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    @GetMapping("/user/projects/getall")
+    @GetMapping("/useradmin/projects/getall")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<Project>> getAllProjects() {
         List<Project> projects = projectService.getAllProjects();
