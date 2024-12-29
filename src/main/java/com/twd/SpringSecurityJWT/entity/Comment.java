@@ -1,6 +1,7 @@
 package com.twd.SpringSecurityJWT.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Comment {
@@ -19,7 +20,9 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     private OurUsers user;
 
-    // Constructeurs
+    private LocalDateTime createdAt;
+
+    // Constructors
     public Comment() {
     }
 
@@ -27,9 +30,15 @@ public class Comment {
         this.content = content;
         this.task = task;
         this.user = user;
+        this.createdAt = LocalDateTime.now(); // Automatically set the timestamp
     }
 
-    // Getters et Setters
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -60,5 +69,13 @@ public class Comment {
 
     public void setUser(OurUsers user) {
         this.user = user;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

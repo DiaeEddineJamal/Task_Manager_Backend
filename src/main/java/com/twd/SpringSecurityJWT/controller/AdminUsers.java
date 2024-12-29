@@ -65,7 +65,7 @@ public class AdminUsers {
 
     // Profile Picture Endpoints
 
-    @PostMapping("/user/profile-picture")
+    @PostMapping("/adminuser/profile-picture")
     public ResponseEntity<Map<String, String>> uploadProfilePicture(
             @RequestParam("file") MultipartFile file) {
         try {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.twd.SpringSecurityJWT.entity.OurUsers;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -23,5 +24,7 @@ public class TaskDTO {
     private String userName;    // Added to include the user's name
     private String userEmail;   // Added to include the user's email
     private String userRole;    // Added to include the user's role
+    // New field to include comments
+    private List<CommentDTO> comments;
 
 }

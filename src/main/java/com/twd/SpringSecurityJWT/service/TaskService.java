@@ -1,5 +1,6 @@
 package com.twd.SpringSecurityJWT.service;
 
+import com.twd.SpringSecurityJWT.dto.CommentDTO;
 import com.twd.SpringSecurityJWT.entity.*;
 import com.twd.SpringSecurityJWT.repository.OurUserRepo;
 import com.twd.SpringSecurityJWT.repository.TaskRepository;
@@ -164,8 +165,21 @@ public class TaskService {
             taskDTO.setUserRole(task.getUser().getRole());
         }
 
+        // Include comments
+        List<CommentDTO> commentDTOs = task.getComments().stream().map(comment -> {
+            CommentDTO commentDTO = new CommentDTO();
+            commentDTO.setId(comment.getId());
+            commentDTO.setContent(comment.getContent());
+            commentDTO.setUserName(comment.getUser().getName());
+            commentDTO.setUserEmail(comment.getUser().getEmail());
+            commentDTO.setCreatedAt(comment.getCreatedAt());
+            return commentDTO;
+        }).collect(Collectors.toList());
+        taskDTO.setComments(commentDTOs);
+
         return taskDTO;
     }
+
 
     // Delete a task by ID
     public void deleteTask(int id) {

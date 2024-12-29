@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -38,4 +39,8 @@ public class Tasks {
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "tasks"})  // Prevent recursion and serialization issues
     private OurUsers user;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"task"})  // Avoid circular references
+    private List<Comment> comments;
 }
