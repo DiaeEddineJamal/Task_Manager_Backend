@@ -100,4 +100,12 @@ public class ProjectController {
         projectService.completeProject(id);  // Calls service to mark project as completed
         return ResponseEntity.ok("Project with ID " + id + " has been marked as completed.");
     }
+
+    @PutMapping("/user/projects/{id}/update-status")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<String> updateProjectStatus(@PathVariable int id) {
+        projectService.updateProjectStatus(id);
+        return ResponseEntity.ok("Project status has been updated.");
+    }
 }
+

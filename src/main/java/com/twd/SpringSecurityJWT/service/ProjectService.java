@@ -145,8 +145,30 @@ public class ProjectService {
         boolean allTasksCompleted = tasks.stream().allMatch(task -> task.getStatus() == Status.COMPLETED);
 
         if (allTasksCompleted) {
+            project.setStatus(Status.COMPLETED);
             project.setEndtime(LocalDateTime.now());  // Set current time as endtime for completed projects
             projectRepository.save(project);
+        } else {
+            throw new RuntimeException("Cannot complete project. Not all tasks are completed.");
         }
     }
+
+    public void updateProjectStatus(int projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found with ID: " + projectId));
+
+        List<Tasks> tasks = project.getTasks();
+        boolean allTasksCompleted = tasks.stream().allMatch(task -> task.getStatus() == Status.COMPLETED);
+
+        if (allTasksCompleted && project.getStatus() != Status.COMPLETED) {
+            project.setStatus(Status.COMPLETED);
+            project.setEndtime(LocalDateTime.now());
+        } else if (!allTasksCompleted && project.getStatus() == Status.COMPLETED) {
+            project.setStatus(Status.IN_PROGRESS);
+            project.setEndtime(null);
+        }
+
+        projectRepository.save(project);
+    }
 }
+

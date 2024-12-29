@@ -15,6 +15,10 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
+		<sonar.projectKey>luzivila_task-manager</sonar.projectKey>
+		<sonar.organization>luzivila</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.login>fb21a7e42bea2b248b28cf79cd60acf167f8bdcc</sonar.login>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -108,7 +112,17 @@
 						</exclude>
 					</excludes>
 				</configuration>
+
 			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.9.1.2184</version>
+			</plugin>
+
 		</plugins>
+
+
+
 	</build>
 </project>
