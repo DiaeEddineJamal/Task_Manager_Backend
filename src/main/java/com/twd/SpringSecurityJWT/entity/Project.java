@@ -30,7 +30,6 @@ public class Project {
 
     private LocalDateTime endtime;
 
-    // Add the status field to the project
     @Enumerated(EnumType.STRING)
     private Status status; // This will track the status of the project
 
@@ -46,4 +45,13 @@ public class Project {
     @JsonManagedReference  // Prevent recursion during serialization (for tasks)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  // Prevent Hibernate proxy serialization issues
     private List<Tasks> tasks = new ArrayList<>();
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }
+
