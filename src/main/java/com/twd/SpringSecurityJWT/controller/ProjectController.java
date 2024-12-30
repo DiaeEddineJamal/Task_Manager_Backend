@@ -3,6 +3,7 @@ package com.twd.SpringSecurityJWT.controller;
 import com.twd.SpringSecurityJWT.dto.TeamMemberRequest;
 import com.twd.SpringSecurityJWT.entity.Project;
 import com.twd.SpringSecurityJWT.entity.OurUsers;
+import com.twd.SpringSecurityJWT.entity.Status;
 import com.twd.SpringSecurityJWT.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class ProjectController {
     @PostMapping("/user/projects/addproject")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Project> addProject(@RequestBody Project project) {
+        project.setStatus(Status.PENDING);
         Project savedProject = projectService.addProject(project);
         return ResponseEntity.ok(savedProject);
     }
@@ -78,7 +80,6 @@ public class ProjectController {
         return ResponseEntity.ok(updatedProject);
     }
 
-    // New endpoint: Get overdue projects (estimatedEndtime within 3 days)
     @GetMapping("/user/projects/overdue")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<Project>> getOverdueProjects() {
@@ -94,10 +95,9 @@ public class ProjectController {
         return ResponseEntity.ok(progress);
     }
 
-    // Endpoint to mark a project as complete and set its endtime
     @PostMapping("/user/projects/{id}/complete")
     public ResponseEntity<String> completeProject(@PathVariable int id) {
-        projectService.completeProject(id);  // Calls service to mark project as completed
+        projectService.completeProject(id);
         return ResponseEntity.ok("Project with ID " + id + " has been marked as completed.");
     }
 
@@ -108,4 +108,3 @@ public class ProjectController {
         return ResponseEntity.ok("Project status has been updated.");
     }
 }
-
