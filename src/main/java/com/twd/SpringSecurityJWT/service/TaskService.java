@@ -200,7 +200,7 @@ public class TaskService {
     }
 
     // Helper method to parse the status string to Status enum
-    private Status parseStatus(String status) {
+    public Status parseStatus(String status) {
         try {
             return Status.valueOf(status);
         } catch (IllegalArgumentException e) {
@@ -209,7 +209,7 @@ public class TaskService {
     }
 
     // Helper method to parse the priority string to Priority enum
-    private Priority parsePriority(String priority) {
+    public Priority parsePriority(String priority) {
         try {
             return Priority.valueOf(priority);
         } catch (IllegalArgumentException e) {
