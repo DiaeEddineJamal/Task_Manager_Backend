@@ -40,11 +40,6 @@ Task Flow est une application multiplateforme développée avec *Flutter* pour a
 - Accès rapide aux tâches en retard et terminées.
 - Ajout de commentaires aux tâches pour faciliter la collaboration.
 - Historique des tâches complétées.
-- Statistiques sur la productivité (tâches terminées par semaine, temps moyen de réalisation).
-
-### **Notifications :**
-- Rappels automatiques pour les échéances imminentes.
-- Notifications personnalisables activables/désactivables.
 
 ---
 
@@ -52,7 +47,6 @@ Task Flow est une application multiplateforme développée avec *Flutter* pour a
 
 ### *Frontend :*
 - Flutter (Dart)
-- Material Design pour l’interface utilisateur.
 
 ### *Backend :*
 - API développée en Spring Boot.
