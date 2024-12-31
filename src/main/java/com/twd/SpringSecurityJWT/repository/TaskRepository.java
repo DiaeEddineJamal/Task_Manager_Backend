@@ -20,4 +20,6 @@ public interface TaskRepository extends JpaRepository<Tasks, Integer> {
 
     // Find tasks with estimatedEndtime before the specified date
     List<Tasks> findByEstimatedEndtimeBefore(LocalDate date);
+
+
 }
