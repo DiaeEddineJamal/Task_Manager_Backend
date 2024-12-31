@@ -83,33 +83,41 @@ flutter run
 ```
 
 
-🎯 Backlog produit
-Histoires utilisateur :
-En tant qu'utilisateur, je veux créer un compte pour accéder à l'application.
-Je veux me connecter à mon compte pour gérer mes tâches.
-Je veux créer des tâches avec des informations nécessaires (titre, priorité, échéance).
-Je veux gérer mes tâches (modifier, supprimer).
-Je veux visualiser rapidement mes tâches en retard et terminées.
-Pour la liste complète, consultez le fichier Livrable 1.
+🎯 **Backlog produit**  
+**Histoires utilisateur :**  
+En tant qu'utilisateur, je veux créer un compte pour accéder à l'application.  
+Je veux me connecter à mon compte pour gérer mes tâches.  
+Je veux créer des tâches avec des informations nécessaires (titre, priorité, échéance).  
+Je veux gérer mes tâches (modifier, supprimer).  
+Je veux visualiser rapidement mes tâches en retard et terminées.  
+Pour la liste complète, consultez le fichier **Livrable 1**.  
 
-🗂️ Répartition des tâches
-Scrum Master : EL ABOUDI WAIL
-Design : EL JOUALI Ali, Amal Yassine
-Conception : GHOULAM NOUHAILA, EL ABOUDI WAIL, JAMAL DIAE-EDINE
-Frontend : AMAL YASSINE, EL ABOUDI WAIL, JAMAL DIAE-EDINE, GHOULAM NOUHAILA
-Backend : EL ABOUDI WAIL, JAMAL DIAE-EDINE, AMAL YASSINE
-Test : EL JOUALI ALI, GHOULAM NOUHAILA
+---
 
-👩‍💻 Contributeurs
-Ghoulam Nouhaila
-El Aboudi Wail
-Jamal Diae-Edine
-El Jouali Ali
-Amal Yassine
-Pour toute suggestion ou contribution, contactez-nous à :
-📧 elaboudiwail@example.com
+🗂️ **Répartition des tâches**  
+**Scrum Master :** EL ABOUDI WAIL  
+**Design :** EL JOUALI Ali, Amal Yassine  
+**Conception :** GHOULAM NOUHAILA, EL ABOUDI WAIL, JAMAL DIAE-EDINE  
+**Frontend :** AMAL YASSINE, EL ABOUDI WAIL, JAMAL DIAE-EDINE, GHOULAM NOUHAILA  
+**Backend :** EL ABOUDI WAIL, JAMAL DIAE-EDINE, AMAL YASSINE  
+**Test :** EL JOUALI ALI, GHOULAM NOUHAILA  
 
-📜 Licence
-Ce projet est sous licence MIT.
+---
+
+👩‍💻 **Contributeurs**  
+El Aboudi Wail  
+Ghoulam Nouhaila  
+Jamal Diae-Edine  
+El Jouali Ali  
+Amal Yassine  
+
+Pour toute suggestion ou contribution, contactez-nous à :  
+📧 *wailelaboudi0@gmail.com*  
+
+---
+
+📜 **Licence**  
+Ce projet est sous licence [MIT](https://opensource.org/licenses/MIT).  
+
 
 
