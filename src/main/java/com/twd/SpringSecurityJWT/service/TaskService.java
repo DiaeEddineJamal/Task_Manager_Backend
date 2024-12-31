@@ -62,11 +62,16 @@ public class TaskService {
             task.setEndtime(LocalDateTime.now());
         }
 
+
         // Save the task and update project status if needed
         task = taskRepository.save(task);
         updateProjectStatus(project);
 
         return task;
+    }
+    // Add this method to fetch tasks by project ID
+    public List<Tasks> getTasksByProjectId(int projectId) {
+        return taskRepository.findByProjectId(projectId);
     }
 
     // Update an existing task

@@ -5,6 +5,7 @@ import com.twd.SpringSecurityJWT.dto.TaskDTO;
 import com.twd.SpringSecurityJWT.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.HashMap;
@@ -94,6 +95,13 @@ public class TasksController {
         response.put("count", overdueTasks.size());
 
         return ResponseEntity.ok(response);
+    }
+    // Add this method to fetch tasks by project ID
+    @GetMapping("/project/{projectId}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')") // Ensure proper role-based access
+    public ResponseEntity<List<Tasks>> getTasksByProjectId(@PathVariable int projectId) {
+        List<Tasks> tasks = taskService.getTasksByProjectId(projectId);
+        return ResponseEntity.ok(tasks);
     }
 
     // Optional: Add a specific endpoint for completing tasks
