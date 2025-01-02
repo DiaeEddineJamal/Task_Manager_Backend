@@ -12,25 +12,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user/tasks")
 public class TasksController {
 
     @Autowired
     private TaskService taskService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/useradmin/tasks/{id}")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable int id) {
         TaskDTO taskDTO = taskService.getTaskById(id);
         return ResponseEntity.ok(taskDTO);
     }
 
-    @GetMapping("/getall")
+    @GetMapping("/user/tasks/getall")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<Tasks>> getAllTasks() {
         List<Tasks> tasks = taskService.getAllTasks();
         return ResponseEntity.ok(tasks);
     }
 
-    @PostMapping("/addtask")
+    @PostMapping("/user/tasks/addtask")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Map<String, Object>> addTask(@RequestBody TaskDTO taskDTO) {
         Tasks savedTask = taskService.createTask(taskDTO);
 
@@ -45,7 +46,7 @@ public class TasksController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/user/tasks/update/{id}")
     public ResponseEntity<Map<String, Object>> updateTaskById(@PathVariable int id, @RequestBody TaskDTO updatedTask) {
         Map<String, Object> response = new HashMap<>();
 
@@ -72,7 +73,7 @@ public class TasksController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/user/tasks/delete/{id}")
     public ResponseEntity<Map<String, String>> deleteTaskById(@PathVariable int id) {
         taskService.deleteTask(id);
 
@@ -84,6 +85,7 @@ public class TasksController {
     }
 
     @GetMapping("/overdue")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Map<String, Object>> getOverdueTasks() {
         List<Tasks> overdueTasks = taskService.getOverdueTasks();
 
@@ -97,7 +99,7 @@ public class TasksController {
         return ResponseEntity.ok(response);
     }
     // Add this method to fetch tasks by project ID
-    @GetMapping("/project/{projectId}")
+    @GetMapping("/useradmin/tasks/project/{projectId}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')") // Ensure proper role-based access
     public ResponseEntity<List<Tasks>> getTasksByProjectId(@PathVariable int projectId) {
         List<Tasks> tasks = taskService.getTasksByProjectId(projectId);
@@ -105,7 +107,7 @@ public class TasksController {
     }
 
     // Optional: Add a specific endpoint for completing tasks
-    @PutMapping("/{id}/complete")
+    @PutMapping("/user/tasks/{id}/complete")
     public ResponseEntity<Map<String, Object>> completeTask(@PathVariable int id) {
         TaskDTO completionDTO = new TaskDTO();
         completionDTO.setStatus("COMPLETED");

@@ -88,7 +88,7 @@ public class ProjectController {
         return ResponseEntity.ok(overdueProjects);
     }
 
-    @GetMapping("/user/projects/{id}/progress")
+    @GetMapping("/useradmin/projects/{id}/progress")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Double> getProjectProgress(@PathVariable int id) {
         double progress = projectService.calculateProjectProgress(id);
