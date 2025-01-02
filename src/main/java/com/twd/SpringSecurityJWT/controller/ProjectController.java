@@ -33,7 +33,7 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
-    @PostMapping("/useradmin/projects/addproject")
+    @PostMapping("/admin/projects/addproject")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Project> addProject(@RequestBody Project project) {
         project.setStatus(Status.PENDING);
