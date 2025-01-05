@@ -18,6 +18,7 @@ public class TasksController {
     private TaskService taskService;
 
     @GetMapping("/useradmin/tasks/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<TaskDTO> getTaskById(@PathVariable int id) {
         TaskDTO taskDTO = taskService.getTaskById(id);
         return ResponseEntity.ok(taskDTO);

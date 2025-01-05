@@ -10,14 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user/comments")
 public class CommentController {
 
     @Autowired
     private CommentService commentService;
 
-    @PostMapping("/addcomment")
-    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/useradmin/comments/addcomment")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Comment> createComment(@RequestBody CommentRequest commentRequest) {
         Comment createdComment = commentService.createComment(
                 commentRequest.getContent(),
@@ -27,8 +26,8 @@ public class CommentController {
         return ResponseEntity.ok(createdComment);
     }
 
-    @GetMapping("/getallcomments")
-    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/useradmin/comments//getallcomments")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<Comment>> getAllComments() {
         return ResponseEntity.ok(commentService.getAllComments());
     }
