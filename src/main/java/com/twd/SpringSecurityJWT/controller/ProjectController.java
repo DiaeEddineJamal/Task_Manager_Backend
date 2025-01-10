@@ -80,7 +80,7 @@ public class ProjectController {
         return ResponseEntity.ok(updatedProject);
     }
 
-    @GetMapping("/user/projects/overdue")
+    @GetMapping("/useradmin/projects/overdue")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<Project>> getOverdueProjects() {
         LocalDateTime threeDaysFromNow = LocalDateTime.now().plusDays(3);
